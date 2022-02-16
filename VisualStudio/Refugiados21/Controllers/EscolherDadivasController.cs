@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
@@ -13,17 +14,26 @@ namespace Refugiados1.Controllers
     public class EscolherDadivasController : Controller
     {
         private readonly Context _context;
+        private readonly SignInManager<IdentityUser> _signInManager;
+        private readonly UserManager<IdentityUser> _userManager;
 
-        public EscolherDadivasController(Context context)
+
+        public EscolherDadivasController(Context context, UserManager<IdentityUser> userManager, SignInManager<IdentityUser> signInManager)
         {
             _context = context;
+            _userManager = userManager;
+            _signInManager = signInManager;
         }
 
         // GET: EscolherDadivas
         public async Task<IActionResult> Index()
         {
-            var context = _context.EscolherDadiva.Include(e => e.CriarDadiva);
-            return View(await context.ToListAsync());
+            if (_signInManager.IsSignedIn(User))
+            {
+                var context = _context.EscolherDadiva.Include(e => e.CriarDadiva);
+                return View(await context.ToListAsync());
+            }
+            return BadRequest();
         }
 
         // GET: EscolherDadivas/Details/5
@@ -41,15 +51,22 @@ namespace Refugiados1.Controllers
             {
                 return NotFound();
             }
-
-            return View(escolherDadiva);
+            if (_signInManager.IsSignedIn(User))
+            {
+                return View(escolherDadiva);
+            }
+            return BadRequest();
         }
 
         // GET: EscolherDadivas/Create
         public IActionResult Create()
         {
             ViewData["IdCriarDadiva"] = new SelectList(_context.CriarDadiva, "IdCriarDadiva", "Dadiva", "IdNome", "Nome");
-            return View();
+            if (_signInManager.IsSignedIn(User))
+            {
+                return View();
+            }
+            return BadRequest();
         }
 
         // POST: EscolherDadivas/Create
@@ -81,8 +98,12 @@ namespace Refugiados1.Controllers
             {
                 return NotFound();
             }
-            ViewData["IdCriarDadiva"] = new SelectList(_context.CriarDadiva, "IdCriarDadiva", "Dadiva", "IdNome", "Nome");
-            return View(escolherDadiva);
+            if (_signInManager.IsSignedIn(User))
+            {
+                ViewData["IdCriarDadiva"] = new SelectList(_context.CriarDadiva, "IdCriarDadiva", "Dadiva", "IdNome", "Nome");
+                return View(escolherDadiva);
+            }
+            return BadRequest();
         }
 
         // POST: EscolherDadivas/Edit/5
@@ -121,8 +142,11 @@ namespace Refugiados1.Controllers
             {
                 return NotFound();
             }
-
-            return View(escolherDadiva);
+            if (_signInManager.IsSignedIn(User))
+            {
+                return View(escolherDadiva);
+            }
+            return BadRequest();
         }
 
         // POST: EscolherDadivas/Delete/5

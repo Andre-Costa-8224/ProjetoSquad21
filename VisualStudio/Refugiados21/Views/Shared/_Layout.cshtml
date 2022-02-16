@@ -8,25 +8,87 @@
     <link rel="stylesheet" href="~/css/style.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/Refugiados1.styles.css" asp-append-version="true" />
     <link rel="icon" href="~/midia/migration-3129340.ico" />
+
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-SKT64ZT05R"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', 'G-SKT64ZT05R');
+    </script>
+
 </head>
 <body >
     <header>
-        <nav class="navs">
-            
-            <a asp-controller="Home" asp-action="Index" class="imglogo logo"><img src="~/midia/logo.png" height="40px"/></a>
-            <div class="logotxt">
-            <a asp-controller="Home" asp-action="Index">Refúgio</a>
-            </div>
-            <ul class="menus">
-                <li><a asp-controller="Home" asp-action="Index">HOME</a></li>
-                <li><a href="#">DÁDIVAS</a>
-                    <ul>
-                        <li><a asp-controller="Home" asp-action="Ajudadores">PESSOA AJUDADORA</a></li>
-                        <li><a asp-controller="Home" asp-action="Ongs">ONG</a></li>
+        <nav class="navs navbar navbar-expand-lg navbar-light">
+            <div class="container-fluid">
+            <a class="navbar-brand" asp-controller="Home" asp-action="Index" class="imglogo logo"><img src="~/midia/logo.png" height="40px"/></a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+              <span class="navbar-toggler-icon"></span>
+            </button>
+                <div class="collapse navbar-collapse" id="navbarNav">
+                    <ul class="menus navbar-nav">
+                        <li><a asp-controller="Home" asp-action="Index">HOME</a></li>
+                        <li><a href="#">DÁDIVAS</a>
+                            <ul class="logins">
+                                @using Microsoft.AspNetCore.Identity
+
+                                @inject SignInManager<IdentityUser> SignInManager
+                                @inject UserManager<IdentityUser> UserManager
+
+                                
+
+                                @if(SignInManager.IsSignedIn(User)){
+
+                                    <li><a asp-controller="Home" asp-action="Ajudadores">Anjos</a></li>
+                                    <li><a asp-controller="Home" asp-action="Ongs">Ongs</a></li>
+                                    <li><a asp-controller="Avaliacaos" asp-action="Index">Deixe seu feedback</a></li>
+                                }else
+                                {
+                                    <li><a class="disabled">Anjos</a></li>
+                                    <li><a class="disabled">Ongs</a></li>
+                                }
+                             </ul>
+                        </li>
+                        <li><a asp-controller="Home" asp-action="Sobre">SOBRE</a></li>
                     </ul>
-                </li>
-                <li><a asp-controller="Home" asp-action="Sobre">SOBRE</a></li>
-            </ul>
+                </div>
+            </div>
+            <div class="collapse navbar-collapse" id="navbarNav" style="margin-right: 10px;">
+                <ul class="menus logins navbar-nav">
+                    <li><a href="#">LOGIN</a>
+                        <ul class="mostraperfil">
+
+                            @using Microsoft.AspNetCore.Identity
+
+                                @inject SignInManager<IdentityUser> SignInManager
+                                @inject UserManager<IdentityUser> UserManager
+
+                                
+
+                                @if(SignInManager.IsSignedIn(User)){
+
+                                    <li>
+                                        <a id="manage" class="text-dark " asp-area="Identity" asp-page="/Account/Manage/Index" title="Ver perfil">Hello @UserManager.GetUserName(User)</a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <form id="logoutForm" class="form-inline" asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="@Url.Action("Index", "Home", new { area = "" })">
+                                            <button id="logout" type="submit" class="nav-link btn btn-link text-dark">Logout</button>
+                                        </form>
+                                    </li>
+
+                                }else
+                                {
+                                    <li><a asp-controller="Home" asp-action="LoginAnjo">Login Anjo</a></li>
+                                    <li><a asp-controller="Home" asp-action="LoginOng">Login Ong</a></li>
+                                }
+
+                        </ul>
+                    </li>
+                </ul>
+            </div>
         </nav>
     </header>
 

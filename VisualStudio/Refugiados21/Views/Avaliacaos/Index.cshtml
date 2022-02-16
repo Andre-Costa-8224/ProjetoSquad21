@@ -1,0 +1,45 @@
+﻿@model IEnumerable<Refugiados1.Models.Avaliacao>
+
+@{
+    ViewData["Title"] = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<header>
+
+<div>
+<h1>Comentários</h1>
+</div>
+<div>
+<p>
+    <a asp-action="Create" class="btn btn-primary">Novo comentário</a>
+</p>
+</div>
+</header>
+<section class="section">
+
+    <br/>
+    <h5>Comentários de anjos e ongs:</h5>
+            
+@foreach (var item in Model) {
+        <hr/>
+            <p>
+                <strong>@Html.DisplayNameFor(model => model.Nome)</strong>:
+                @Html.DisplayFor(modelItem => item.Nome)
+            </p>
+            <p>
+                <strong>@Html.DisplayNameFor(model => model.Tipo)</strong>:
+                @Html.DisplayFor(modelItem => item.Tipo)
+            </p>
+            <p>
+                <strong>@Html.DisplayNameFor(model => model.Avaliacoes)</strong>:
+                @Html.DisplayFor(modelItem => item.Avaliacoes)
+            </p>
+            <p>
+                <a asp-action="Edit" asp-route-id="@item.IdAvaliacao">Editar</a> |
+                <a asp-action="Details" asp-route-id="@item.IdAvaliacao">Detalhes</a> |
+                <a asp-action="Delete" asp-route-id="@item.IdAvaliacao">Deletar</a>
+            </p>
+}
+    </tbody>
+</section>

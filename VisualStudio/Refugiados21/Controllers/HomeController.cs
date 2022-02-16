@@ -1,17 +1,26 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Refugiados1.Models;
 using System.Diagnostics;
+using Microsoft.AspNetCore.Identity;
+
+
 
 namespace Refugiados1.Controllers
 {
     public class HomeController : Controller
     {
+        private readonly SignInManager<IdentityUser> _signInManager;
+        private readonly UserManager<IdentityUser> _userManager;
         private readonly ILogger<HomeController> _logger;
 
-        public HomeController(ILogger<HomeController> logger)
+        public HomeController(ILogger<HomeController> logger, UserManager<IdentityUser> userManager, SignInManager<IdentityUser> signInManager)
         {
             _logger = logger;
+            _userManager = userManager;
+            _signInManager = signInManager;
         }
+
 
         public IActionResult Index()
         {
@@ -25,11 +34,38 @@ namespace Refugiados1.Controllers
 
         public IActionResult Ajudadores()
         {
-            return View();
+            if (_signInManager.IsSignedIn(User))
+            {
+                return View();
+            }
+            else
+            {
+                return RedirectToAction(nameof(Index));
+            }
         }
 
         public IActionResult Ongs()
         {
+            if (_signInManager.IsSignedIn(User))
+            {
+                return View();
+            }
+            else
+            {
+                return RedirectToAction(nameof(Index));
+            }
+        }
+        
+
+        public IActionResult LoginAnjo()
+        {
+            
+            return View();
+            
+        }
+        public IActionResult LoginOng()
+        {
+            
             return View();
         }
 

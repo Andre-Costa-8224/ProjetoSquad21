@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
@@ -13,16 +14,24 @@ namespace Refugiados1.Controllers
     public class CriarDadivasController : Controller
     {
         private readonly Context _context;
+        private readonly SignInManager<IdentityUser> _signInManager;
+        private readonly UserManager<IdentityUser> _userManager;
 
-        public CriarDadivasController(Context context)
+        public CriarDadivasController(Context context, UserManager<IdentityUser> userManager, SignInManager<IdentityUser> signInManager)
         {
             _context = context;
+            _userManager = userManager;
+            _signInManager = signInManager;
         }
 
         // GET: CriarDadivas
         public async Task<IActionResult> Index()
         {
-            return View(await _context.CriarDadiva.ToListAsync());
+            if (_signInManager.IsSignedIn(User))
+            {
+                return View(await _context.CriarDadiva.ToListAsync());
+            }
+            return BadRequest();
         }
 
         // GET: CriarDadivas/Details/5
@@ -39,14 +48,21 @@ namespace Refugiados1.Controllers
             {
                 return NotFound();
             }
-
-            return View(criarDadiva);
+            if (_signInManager.IsSignedIn(User))
+            {
+                return View(criarDadiva);
+            }
+            return BadRequest();
         }
 
         // GET: CriarDadivas/Create
         public IActionResult Create()
         {
-            return View();
+            if (_signInManager.IsSignedIn(User))
+            {
+                return View();
+            }
+            return BadRequest();
         }
 
         // POST: CriarDadivas/Create
@@ -76,7 +92,11 @@ namespace Refugiados1.Controllers
             {
                 return NotFound();
             }
-            return View(criarDadiva);
+            if (_signInManager.IsSignedIn(User))
+            {
+                return View(criarDadiva);
+            }
+            return BadRequest();
         }
 
         // POST: CriarDadivas/Edit/5
@@ -113,8 +133,11 @@ namespace Refugiados1.Controllers
             {
                 return NotFound();
             }
-
-            return View(criarDadiva);
+            if (_signInManager.IsSignedIn(User))
+            {
+                return View(criarDadiva);
+            }
+            return BadRequest();
         }
 
         // POST: CriarDadivas/Delete/5

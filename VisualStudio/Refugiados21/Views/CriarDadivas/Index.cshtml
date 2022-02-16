@@ -6,7 +6,7 @@
 
 <header>
     <div>
-        <h2 style="margin-bottom: -4%;">Distribua suas Dádivas. Seja o Anjo de alguém!</h2>
+        <h2 style="margin-top: 12px; margin-bottom: 12px;">Distribua suas Dádivas. Seja o Anjo de alguém!</h2>
         <div class="mao">
             <div>
                 <p class="apontador">👉</p>
@@ -22,7 +22,7 @@
     </div>
 </header>
 
-<section >
+<section class="section">
 
     <br/>
     <h5>Dádivas criadas por Anjos:</h5>
@@ -50,7 +50,7 @@
             <span>
                 <a asp-action="Edit" asp-route-id="@item.IdCriarDadiva">Editar</a> |
                 <a asp-action="Details" asp-route-id="@item.IdCriarDadiva">Detalhes</a> |
-                <a asp-action="Delete" asp-route-id="@item.IdCriarDadiva">Excluir</a>
+                <a asp-action="Delete" asp-route-id="@item.IdCriarDadiva" class="btn-danger">Excluir</a>
             </span>
         
 }

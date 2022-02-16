@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
@@ -12,17 +13,25 @@ namespace Refugiados1.Controllers
 {
     public class SolicitarDadivasController : Controller
     {
+        private readonly SignInManager<IdentityUser> _signInManager;
+        private readonly UserManager<IdentityUser> _userManager;
         private readonly Context _context;
 
-        public SolicitarDadivasController(Context context)
+        public SolicitarDadivasController(Context context, UserManager<IdentityUser> userManager, SignInManager<IdentityUser> signInManager)
         {
             _context = context;
+            _userManager = userManager;
+            _signInManager = signInManager;
         }
 
         // GET: SolicitarDadivas
         public async Task<IActionResult> Index()
         {
-            return View(await _context.SolicitarDadiva.ToListAsync());
+            if (_signInManager.IsSignedIn(User))
+            {
+                return View(await _context.SolicitarDadiva.ToListAsync());
+            }
+            return BadRequest();
         }
 
         // GET: SolicitarDadivas/Details/5
@@ -39,14 +48,21 @@ namespace Refugiados1.Controllers
             {
                 return NotFound();
             }
-
-            return View(solicitarDadiva);
+            if (_signInManager.IsSignedIn(User))
+            {
+                return View(solicitarDadiva);
+            }
+            return BadRequest();
         }
 
         // GET: SolicitarDadivas/Create
         public IActionResult Create()
         {
-            return View();
+            if (_signInManager.IsSignedIn(User))
+            {
+                return View();
+            }
+            return BadRequest();
         }
 
         // POST: SolicitarDadivas/Create
@@ -76,7 +92,12 @@ namespace Refugiados1.Controllers
             {
                 return NotFound();
             }
-            return View(solicitarDadiva);
+
+            if (_signInManager.IsSignedIn(User))
+            {
+                return View(solicitarDadiva);
+            }
+            return BadRequest();
         }
 
         // POST: SolicitarDadivas/Edit/5
@@ -114,8 +135,11 @@ namespace Refugiados1.Controllers
             {
                 return NotFound();
             }
-
-            return View(solicitarDadiva);
+            if (_signInManager.IsSignedIn(User))
+            {
+                return View(solicitarDadiva);
+            }
+            return BadRequest();
         }
 
         // POST: SolicitarDadivas/Delete/5

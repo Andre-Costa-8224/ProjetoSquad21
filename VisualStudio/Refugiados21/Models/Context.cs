@@ -6,10 +6,8 @@ namespace Refugiados1.Models
     {
         public Context(DbContextOptions<Context> options) : base(options)
         {
-            Database.EnsureCreated();
-        }
 
-        
+        }
 
         public DbSet<AtenderDadiva> AtenderDadiva { get; set; }
 
@@ -18,6 +16,8 @@ namespace Refugiados1.Models
         public DbSet<EscolherDadiva> EscolherDadiva { get; set; }
 
         public DbSet<SolicitarDadiva> SolicitarDadiva { get; set; }
+
+        public DbSet<Avaliacao> Avaliacao { get; set; }
 
     }
 }

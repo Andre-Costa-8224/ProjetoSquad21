@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
@@ -13,17 +14,34 @@ namespace Refugiados1.Controllers
     public class AtenderDadivasController : Controller
     {
         private readonly Context _context;
+        private readonly SignInManager<IdentityUser> _signInManager;
+        private readonly UserManager<IdentityUser> _userManager;
 
-        public AtenderDadivasController(Context context)
+        public AtenderDadivasController(Context context, UserManager<IdentityUser> userManager, SignInManager<IdentityUser> signInManager)
         {
             _context = context;
+            _userManager = userManager;
+            _signInManager = signInManager;
         }
 
         // GET: AtenderDadivas
+        
+        
+
         public async Task<IActionResult> Index()
         {
-            var context = _context.AtenderDadiva.Include(a => a.SolicitarDadiva);
-            return View(await context.ToListAsync());
+
+            if (_signInManager.IsSignedIn(User))
+            {
+                var context = _context.AtenderDadiva.Include(a => a.SolicitarDadiva);
+                return View(await context.ToListAsync());
+            }
+            else
+            {
+                return BadRequest();
+            }
+
+            
         }
 
         // GET: AtenderDadivas/Details/5
@@ -33,7 +51,7 @@ namespace Refugiados1.Controllers
             {
                 return NotFound();
             }
-
+            
             var atenderDadiva = await _context.AtenderDadiva
                 .Include(a => a.SolicitarDadiva)
                 .FirstOrDefaultAsync(m => m.IdAtender == id);
@@ -41,15 +59,24 @@ namespace Refugiados1.Controllers
             {
                 return NotFound();
             }
+            if (_signInManager.IsSignedIn(User))
+            {
+                return View(atenderDadiva);
+            }
 
-            return View(atenderDadiva);
+            return BadRequest();
+            
         }
 
         // GET: AtenderDadivas/Create
         public IActionResult Create()
         {
             ViewData["IdDadiva"] = new SelectList(_context.SolicitarDadiva, "IdDadiva","Dádiva", "IdOng", "Ong");
-            return View();
+            if (_signInManager.IsSignedIn(User))
+            {
+               return View();
+            }
+            return RedirectToAction(nameof(Index));
         }
 
         // POST: AtenderDadivas/Create
@@ -81,8 +108,14 @@ namespace Refugiados1.Controllers
             {
                 return NotFound();
             }
-            ViewData["IdDadiva"] = new SelectList(_context.SolicitarDadiva, "IdDadiva", "Dádiva", "IdOng", "Ong");
-            return View(atenderDadiva);
+            if (_signInManager.IsSignedIn(User))
+            {
+                ViewData["IdDadiva"] = new SelectList(_context.SolicitarDadiva, "IdDadiva", "Dádiva", "IdOng", "Ong");
+                return View(atenderDadiva);
+            }
+
+            return BadRequest();
+            
         }
 
         // POST: AtenderDadivas/Edit/5
@@ -121,8 +154,11 @@ namespace Refugiados1.Controllers
             {
                 return NotFound();
             }
-
-            return View(atenderDadiva);
+            if (_signInManager.IsSignedIn(User))
+            {
+                return View(atenderDadiva);
+            }
+            return BadRequest();
         }
 
         // POST: AtenderDadivas/Delete/5
